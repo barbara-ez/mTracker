@@ -5,11 +5,21 @@ var bodyParser= require("body-parser");
 var admin= require("firebase-admin");
 var firebase=require("firebase");
 var session=require('express-session');
+var nodemailer = require('nodemailer');
 
 admin.initializeApp({
   credential: admin.credential.cert("sample-node.json"),
   databaseURL: "https://maintenance-tracker-fdea0.firebaseio.com"
 });
+
+var transporter = nodemailer.createTransport('SMTP', {
+    service: "Gmail",
+    auth: {
+        user: "barbie.ezomo@gmail.com",
+        pass: "Pegasuses1"
+    }
+});
+var mailOptions = {from: "barbie.ezomo@gmail.com"};
 
 
 //bodyparser helps to get form data passed in request
@@ -34,13 +44,15 @@ app.get('/signedin', function(req, res) {
 });
 
 app.get('/index', function(req, res) {
-    res.render('index');
+    res.redirect('/dashboard');
 });
 
 app.get('/viewRequests', function(req, res) {
 	var user = req.session.currentuser;
 	var myrequests = [];
 	var myrequestsc = [];
+	var keysdone=[];
+	var keysaccept=[];
  
     if (user===undefined || user== null)
     {
@@ -50,17 +62,17 @@ app.get('/viewRequests', function(req, res) {
     	if(user.role=="Admin")
     	{
     
-    	    ref.child('Request').on('value', function(data){
+    	    ref.child('Request').once('value', function(data){
 		    	var requests= data.val();
 		    	
 		    	for(var keys in requests){
-		    		if(requests[keys].Status==""){
+		    		if(requests[keys].Status==""||requests[keys].Completed=="NO"){
+		    			requests[keys].id = keys;
 		    			myrequests.push(requests[keys]);
 		    		}
-		    		if(requests[keys].Completed=="NO"){
-		    			myrequestsc.push(requests[keys]);
-		    		}
+		    		
 		    	}
+		    	console.log(myrequests);
 		    	res.render('viewRequests', {personalrequests: myrequests,personalrequestsc: myrequestsc});
 		    });
 
@@ -76,13 +88,107 @@ app.get('/viewRequests', function(req, res) {
 
 });
 
+
 app.get('/completeRequest', function(req, res) {
-    res.render('completeRequest');
+		
+    var user = req.session.currentuser;
+	var myrequests = [];
+	var myrequestsc = [];
+
+ 
+    if (user===undefined || user== null)
+    {
+    	res.redirect("/");
+    }
+    else{
+    	if(user.role=="Admin")
+    	{
+    
+    	    ref.child('Request').once('value', function(data){
+		    	var requests= data.val();
+		    	
+		    	for(var keys in requests){
+		    		
+		    			myrequests.push(requests[keys]);
+		    		
+		    		
+		    	}
+		    	console.log(myrequests);
+		    	res.render('completeRequest', {personalrequests: myrequests,personalrequestsc: myrequestsc});
+		    });
+
+
+    	}
+    	else
+    	{
+
+		    
+
+    	}
+    }
+   
 });
+
+
+app.get('/completeRequest/:requestid', function(req, res) {
+	console.log(req.params.requestid);
+	var ureq=req.params.requestid;
+	ref.child('Request').child(ureq).update({Status:"Accepted"});
+	
+// 	mailOptions.html="Your Request has been accepted";
+// 		ref.child('Request').child(ureq).on('value', function(snap) {
+// 		var username = snap.val().username;
+// 		ref.child('Users').on('value', function(snap) {
+// 			var users=snap.val();
+// 			for(var keys in users)
+
+// 			{
+// 				if(users.username==username){
+// 					var email=users.email;
+// 					break;
+// 				}
+// 			}
+// 			mailOptions.to="bodunadebiyi";
+// 			mailOptions.html = "Slash a hole";
+// 		    mailOptions.subject = "Me";
+// 		    transporter.sendMail(mailOptions, function(error, response) {
+// 		        if(error) {
+// 		            console.log(error);
+// 		        }
+// 		        else {
+// 		            console.log("Message sent: " + response.message);
+// 		        }
+// 		        transporter.close();
+
+
+
+// 		});
+
+// 	});
+// });
+    res.redirect('/viewRequests');
+});
+
+app.get('/rejectRequest/:requestid', function(req, res) {
+	console.log(req.params.requestid);
+	var ureq=req.params.requestid;
+	ref.child('Request').child(ureq).update({Status:"Rejected"});
+    res.redirect('/viewRequests');
+});
+
+app.get('/updateRequest/:requestid', function(req, res) {
+	console.log(req.params.requestid);
+	var ureq=req.params.requestid;
+	ref.child('Request').child(ureq).update({Completed :"Yes"});
+	
+
+    res.redirect('/viewRequests');
+});
+
 
 app.get('/addRepairMan', function(req, res) {
         var user = req.session.currentuser;
-    var repairmen=[];
+    
 
     if (user===undefined || user== null)
     {
@@ -91,17 +197,9 @@ app.get('/addRepairMan', function(req, res) {
     else
     {
 
-	    ref.child('Repairman').on('value', function(data){
-		    	var repair= data.val();
-		    	
-		    	for(var keys in repair){
-		            repairmen.push(repair[keys]);
-		    	
-		    	}
-
-		   		console.log(repairmen);
-		    	res.render('addRepairMan', {mpersonel: repairmen});
-		});
+		   		
+		    	res.render('addRepairMan');
+	
 	   
  
 	     	
@@ -136,21 +234,20 @@ app.get('/dashboard', function(req, res) {
     	}
     	else
     	{
-		    ref.child('Request').on('value', function(data){
+		    ref.child('Request').once('value', function(data){
 		    	var requests= data.val();
 		    	
 		    	for(var keys in requests){
 		    		console.log(requests[keys])
 		    		if(user.username==requests[keys].username){
 		    			myrequests.push(requests[keys]);
+
 		    		}
 		    	}
 		    	res.render('makeRequest', {personalrequests: myrequests,user:user});
 		    });
 
 		    
-
-
     	}
     }
     
@@ -183,34 +280,6 @@ app.post('/register', function (req, res) {
     res.redirect("/dashboard");
     
 
-        // ref.child("Users").on('value', function(data){
-        // var users = data.val();
-        // var foundUser = null;
-        // for (var keys in users)
-        // {
-        // 	var user = users[keys];
-        // 	if(email==user.email)
-        // 	{
-        // 		if (password==user.password)
-        // 		{
-        // 			foundUser = user;
-        // 			break;
-        // 		}
-        // 	}
-        // }
-
-        // if (foundUser == null) {
-        // 	console.log('user not found')
-        //     res.redirect('/');
-        // } else {
-        // 	console.log('user found')
-        // 	req.session.currentuser = foundUser;
-        // 	res.redirect("/dashboard");
-        // }
-
-
-        // });
-
 
 });
 
@@ -231,7 +300,8 @@ app.post('/request', function (req, res) {
 	        'request': request,
 	        'date': date,
 	        'Status':"",
-	        'Completed':"NO"
+	        'Completed':"NO",
+	        'Maintenance_Personel':""
 	    };
 	    
 	    ref.child('Request').push(reqt);
@@ -322,7 +392,7 @@ app.post('/login', function (req, res) {
 
         if (foundUser == null) {
         	console.log('user not found');
-            res.redirect('/');
+            res.redirect('/signedin');
         } else {
         	console.log('user found')
         	req.session.currentuser = foundUser;

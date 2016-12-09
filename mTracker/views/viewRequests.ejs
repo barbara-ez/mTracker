@@ -65,7 +65,7 @@
                         <a href="/viewRequests"><i class="fa fa-fw fa-table"></i> Check Maintenance Requests</a>
                     </li>
                     <li>
-                        <a href="/completeRequest"><i class="fa fa-fw fa-edit"></i> Approve Requests</a>
+                        <a href="/completeRequest"><i class="fa fa-fw fa-edit"></i> View Requests</a>
                     </li>
                     <li>
                         <a href="/addRepairMan"><i class="fa fa-fw fa-edit"></i> Add Maintenance Personel</a>
@@ -103,7 +103,7 @@
                 <div class="row">
                     
                     <div class="col-lg-6">
-                        <h2>Accepted Requests</h2>
+                        <h2>Edit Requests</h2>
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover table-striped">
                                 <thead>
@@ -113,6 +113,10 @@
                                         <th>User</th>
                                         <th>Status</th>
                                         <th>Completed</th>
+                                        <th>Accept Requests</th>
+                                        <th>Complete Requests</th>
+                                        <th>Reject Requests</th>
+                                        
                                         
                                     </tr>
                                 </thead>
@@ -124,41 +128,18 @@
                                             <td><%= personalrequests[i].username %></td>
                                             <td><%= personalrequests[i].Status %></td>
                                             <td><%= personalrequests[i].Completed %></td>
+                                            <td><a href="/completeRequest/<%=personalrequests[i].id%>">Update</a></td>
+                                            <td><a href="/updateRequest/<%=personalrequests[i].id%>">Update</a></td>
+                                            <td><a href="/rejectRequest/<%=personalrequests[i].id%>">Update</a></td>
                                         </tr>
                                     <% } %>
+                                    
                                 </tbody>
                             </table>
                         </div>
                     </div>
                     
-                    <div class="col-lg-6">
-                        <h2>Pending Requests</h2>
-                        <div class="table-responsive">
- <table class="table table-bordered table-hover table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Requests</th>
-                                        <th>Date</th>
-                                        <th>User</th>
-                                        <th>Status</th>
-                                        <th>Completed</th>
-                                        
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <% for(var i=0; i<personalrequestsc.length; i++) { %>
-                                        <tr>
-                                            <td><%= personalrequestsc[i].request %></td>
-                                            <td><%= personalrequestsc[i].date %></td>
-                                            <td><%= personalrequestsc[i].username %></td>
-                                            <td><%= personalrequestsc[i].Status %></td>
-                                            <td><%= personalrequestsc[i].Completed %></td>
-                                        </tr>
-                                    <% } %>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+
                 </div>
                 <!-- /.row -->
 

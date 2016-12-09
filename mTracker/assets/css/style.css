@@ -119,6 +119,15 @@ input, textarea ,select{
   -webkit-transition: border-color .25s ease, box-shadow .25s ease;
   transition: border-color .25s ease, box-shadow .25s ease;
 }
+select{
+    color:rgba(255, 255, 255, 0.5);
+}
+
+select option
+{
+   background-color:black; 
+   color:rgba(255, 255, 255, 0.5);
+}
 input:focus, textarea:focus, select:focus {
   outline: 0;
   border-color: pink;

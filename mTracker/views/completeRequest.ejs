@@ -64,7 +64,7 @@
                         <a href="/viewRequests"><i class="fa fa-fw fa-table"></i> Check Maintenance Requests</a>
                     </li>
                     <li class="active">
-                        <a href="/completeRequest"><i class="fa fa-fw fa-edit"></i> Approve Requests</a>
+                        <a href="/completeRequest"><i class="fa fa-fw fa-edit"></i> View Requests</a>
                     </li>
                     <li>
                         <a href="/addRepairMan"><i class="fa fa-fw fa-edit"></i> Add Maintenance Personel</a>
@@ -86,14 +86,14 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            Approve Requests
+                            View Requests
                         </h1>
                         <ol class="breadcrumb">
                             <li>
                                 <i class="fa fa-dashboard"></i>  <a href="index.html">Dashboard</a>
                             </li>
                             <li class="active">
-                                <i class="fa fa-edit"></i> Approve Requests
+                                <i class="fa fa-edit"></i> View Requests
                             </li>
                         </ol>
                     </div>
@@ -103,46 +103,41 @@
                 <div class="row">
                     <div class="col-lg-6">
 
-                        <form method ="POST" action ="/updaterequest" role="form">
-
-                            <div class="form-group">
-                               
-                                <label>Request</label>
-                                <input class="form-control" name="request" placeholder="Enter text"><br/>
-
-                                <label>Date</label>
-                                <input class="form-control" name="date" placeholder="Enter text"><br/>
-
-                                <label>Status</label>
-                                <select class="form-control" name="Status">
-                                    <option name="accepted" value="Accepted">Accepted</option>
-                                    <option name="rejected" value="Rejected">Rejected</option>
-                                </select><br/>
-
-                                <label>Completed</label>
-                                <select class="form-control" name="Completed">
-                                    <option name="yes" value="Yes">Yes</option>
-                                    <option name="no" value="No">No</option>
-                                </select><br/>
-
-                                <label>Comments</label>
-                                <textarea rows="4" cols="4" class="form-control" name="comment" placeholder="Enter text"></textArea><br/>
-                            </div>
-
-                            
-                            <button type="submit" class="btn btn-default">Update</button>
-                            <button type="reset" class="btn btn-default">Clear All</button>
-
-
-                        </form>
+                       <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Requests</th>
+                                        <th>Date</th>
+                                        <th>User</th>
+                                        <th>Status</th>
+                                        <th>Completed</th>
+                                        
+                                        
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% for(var i=0; i<personalrequests.length; i++) { %>
+                                        <tr>
+                                            <td><%= personalrequests[i].request %></td>
+                                            <td><%= personalrequests[i].date %></td>
+                                            <td><%= personalrequests[i].username %></td>
+                                            <td><%= personalrequests[i].Status %></td>
+                                            <td><%= personalrequests[i].Completed %></td>
+                                            
+                                        </tr>
+                                    <% } %>
+                                    
+                                </tbody>
+                            </table>
+                        </div>
 
                     </div>
                     <br/>
                     <div class="col-lg-6">
                       
-                        <div class="table-responsive">
-
-                        </div>
+                    
                     </div>
                     
                 </div>

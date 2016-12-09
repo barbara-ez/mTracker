@@ -65,7 +65,7 @@
                         <a href="/viewRequests"><i class="fa fa-fw fa-table"></i> Check Maintenance Requests</a>
                     </li>
                     <li>
-                        <a href="/completeRequest"><i class="fa fa-fw fa-edit"></i> Approve Requests</a>
+                        <a href="/completeRequest"><i class="fa fa-fw fa-edit"></i> View Requests</a>
                     </li>
                     <li class="active">
                         <a href="/addRepairMan"><i class="fa fa-fw fa-edit"></i> Add Maintenance Personel</a>
@@ -109,13 +109,20 @@
                             <div class="form-group">
                                
                                 <label>Name</label>
-                                <input class="form-control" name="name" placeholder="Enter text"><br/>
+                                <input class="form-control" name="name" placeholder="Enter text" required><br/>
 
                                 <label>Rank</label>
-                                <input class="form-control" name="rank" placeholder="Enter text"><br/>
+                                
+                                <select class="form-control"  name ="rank">
+                                    <option>Level 1</option>
+                                    <option>Level 2</option>
+                                    <option>Level 3</option>
+                                    <option>Manager</option>
+
+                                </select></br>
 
                                 <label>Phone No</label>
-                                <input class="form-control" name="phone" placeholder="Enter NO"><br/>
+                                <input class="form-control" name="phone" placeholder="Enter NO" required><br/>
                             </div>
 
                             
@@ -126,18 +133,7 @@
 
                     </div>
                     <br/>
-                    <div class="col-lg-6">
-                      
-                        <div class="table-responsive">
-                            
-                            <select>
-                                <%for (i=0 ; i<mpersonel.length ; i++){%>
-                                <option name=""><%=mpersonel[i].Name%></option>
-                                 <% } %>
-                              </select>
-                           
-                        </div>
-                    </div>
+                   
                     
                 </div>
                 <!-- /.row -->
